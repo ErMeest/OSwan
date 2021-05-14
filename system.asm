@@ -52,8 +52,8 @@ cmp ah, 0x00
 jne derr
 je jcma
 derr:
+	mov al, ah
 	mov ah, 0x0e
-	mov al, 'E'
 	int 0x10
 	jmp $
 jcma:
