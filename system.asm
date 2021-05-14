@@ -48,9 +48,9 @@ mov dh, 0x00	;head/side
 mov bx, 0x8000	;buffer
 mov [es:bx], bx	;actually load the buffer into the correct
 int 0x13
-cmp ch, 0x00
-jnz derr
-jz jcma
+cmp ah, 0x00
+jne derr
+je jcma
 derr:
 	mov ah, 0x0e
 	mov al, 'E'
