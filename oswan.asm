@@ -1,6 +1,11 @@
-cli
-mov [0x1000], dl
-mov ah, 0x00
+mov [0x1000], dl			;save drive number
+mov ah, 0x08
+int 0x13
+mov [0x1001], cl			;save sectors per track number
+and byte[0x1001], 3Fh
+mov [0x1002], cl			;copy it
+and byte[0x1002], 3Fh
+mov [0x1003], ch			;save number of tracks
 org 0x7c00					;i dont fuckin know
 xor ax, ax
 mov ds, ax
@@ -9,25 +14,32 @@ mov ss, ax
 mov sp, 0x7c00
 jmp 0:h
 h:
-	sti
+	mov ah, 0
 	int 0x13
 	cli
 	xor ax, ax					;clear ah and al
-	add ah, 0x02					;set funtcion number
-	add al, 0x01					;set sectors to read count	
+	add ah, 0x02				;set funtcion number
+	add al, 0x01				;set sectors to read count	
 	xor cx, cx					;clear the sector and track number
 	xor dh, dh					;clear head number
-	add cl, 0x02&0x3F				;set sector number
-	mov dl, [0x1000]				;set drive number	
-	xor bx, 0x7e00
+	add cl, 0x02&0x3F			;set sector number
+	mov dl, [0x1000]			;set drive number	
+	mov bx, 0x7e00
 	sti
 	int 0x13
 	mov al, ah
 	mov ah, 0x0E
 	int 0x10
+	mov al, [0x7e00]
+	mov ah, 0x02
+	inc cl
+	mov bx, 0x8000
+	int 0x13
 	jmp hh
 times 510-($-$$) db 0
 db 0x55, 0xAA
+db 0x01
+times 1024-($-$$) db 0
 hh:
 	mov byte[0x0600], 'I'
 	mov byte[0x0601], 't'
@@ -52,4 +64,4 @@ print2:
 	int 0x10
 	inc bx
 	jmp print1
-times 1474560-($-$$) db 0
+times 10705920-($-$$) db 0
