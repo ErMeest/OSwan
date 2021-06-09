@@ -1,2 +1,3 @@
 24.05.2021 - Added code to read the disk 
 05.06.2021 - Fixed bugs in the disk-reading code
+09.06.2021 - Changed the img file from a 1.44MB floppy image to a 10MB hard drive image (615 cylinders, 2 heads, 17 sectors)
