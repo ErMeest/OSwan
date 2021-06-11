@@ -1,11 +1,24 @@
 mov [0x1000], dl			;save drive number
-mov ah, 0x08
-int 0x13
-mov [0x1001], cl			;save sectors per track number
-and byte[0x1001], 3Fh
-mov [0x1002], cl			;copy it
-and byte[0x1002], 3Fh
-mov [0x1003], ch			;save number of tracks
+cmp byte[0x1000], 0x80
+jle iafd
+iafd:
+	mov byte[0x1001], 0x12
+	and byte[0x1001], 3Fh
+	mov byte[0x1002], 0x12
+	and byte [0x1001], 3Fh
+	mov byte[0x1003], 0x50
+	jmp etc
+jge iahd
+iahd:
+	mov ah, 0x08
+	int 0x13
+	mov [0x1001], cl			;save sectors per track number
+	and byte[0x1001], 3Fh
+	mov [0x1002], cl			;copy it
+	and byte[0x1002], 3Fh
+	mov [0x1003], ch			;save number of tracks
+	jmp etc
+etc:
 org 0x7c00					;i dont fuckin know
 xor ax, ax
 mov ds, ax
